@@ -12,15 +12,19 @@ const program = new Command();
 program
   .version("1.0.0")
   .description("Create a Den App")
-  .arguments("<folderName>")
-  .action((folderName) => {
+  .arguments("[folderName]")
+  .action((folderName = ".") => {
     // 사용자가 입력한 폴더 이름 반영
     const projectPath = join(process.cwd(), folderName);
 
     if (!existsSync(projectPath)) {
       mkdirSync(projectPath);
     } else {
-      console.log(chalk.red("The folder already exists!"));
+      console.log(
+        `The folder ${chalk.red(
+          folderName
+        )} already exist in the current directory, please give it another name.`
+      );
       process.exit(1);
     }
 
