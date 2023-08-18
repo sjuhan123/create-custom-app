@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
-import inquirer from "inquirer";
-import chalk from "chalk";
-import shell from "shelljs";
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "fs";
-import { join } from "path";
+const { Command } = require("commander");
+const chalk = require("chalk");
+const shell = require("shelljs");
+const { existsSync, mkdirSync, writeFileSync, readFileSync } = require("fs");
+const { join } = require("path");
+const inquirer = require("inquirer");
+
+const packageJson = require("../package.json");
 
 const program = new Command();
 
 program
-  .version("1.0.0")
-  .description("Create a Den App")
+  .description(packageJson.name)
+  .version(packageJson.version)
   .arguments("[folderName]")
   .action((folderName = ".") => {
     // 사용자가 입력한 폴더 이름 반영
-    const projectPath = join(process.cwd(), folderName);
+    const projectName = folderName;
+    const projectPath = join(process.cwd(), projectName);
 
     if (!existsSync(projectPath)) {
       mkdirSync(projectPath);
@@ -336,7 +339,7 @@ export default App;
         const packageJsonContent = readFileSync(packageJsonPath, "utf8");
         const packageJson = JSON.parse(packageJsonContent);
 
-        packageJson.name = "my-app";
+        packageJson.name = projectName;
         packageJson.scripts = {
           start: "react-scripts start",
           build: "react-scripts build",
