@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
-const { Command } = require("commander");
+const fs = require("fs");
+const path = require("path");
+
+const commander = require("commander");
 const chalk = require("chalk");
 const shell = require("shelljs");
-const { existsSync, mkdirSync, writeFileSync, readFileSync } = require("fs");
-const { join } = require("path");
 const inquirer = require("inquirer");
 
 const packageJson = require("../package.json");
 
-const program = new Command();
+const program = new commander.Command();
 
 program
   .description(packageJson.name)
@@ -19,10 +20,10 @@ program
   .action((folderName = ".") => {
     // 사용자가 입력한 폴더 이름 반영
     const projectName = folderName;
-    const projectPath = join(process.cwd(), projectName);
+    const projectPath = path.join(process.cwd(), projectName);
 
-    if (!existsSync(projectPath)) {
-      mkdirSync(projectPath);
+    if (!fs.existsSync(projectPath)) {
+      fs.mkdirSync(projectPath);
     } else {
       console.log(
         `The folder ${chalk.red(
@@ -120,10 +121,9 @@ program
         shell.exec(`npm install ${installPackages.join(" ")}`);
         shell.exec(`npm install ${devPackages.join(" ")} --save-dev`);
 
-        if (!existsSync(join(projectPath, "public"))) {
-          mkdirSync(join(projectPath, "public"));
+        fs.mkdirSync(path.join(projectPath, "public"));
 
-          const indexHtmlContent = `<!DOCTYPE html>
+        const indexHtmlContent = `<!DOCTYPE html>
         <html lang="en">
         <head>
           <meta charset="utf-8">
@@ -141,12 +141,12 @@ program
         </body>
         </html>`;
 
-          writeFileSync(
-            join(projectPath, "public", "index.html"),
-            indexHtmlContent
-          );
+        fs.writeFileSync(
+          path.join(projectPath, "public", "index.html"),
+          indexHtmlContent
+        );
 
-          const manifestJsonContent = `{
+        const manifestJsonContent = `{
             "short_name": "My App",
             "name": "My App",
             "icons": [
@@ -162,19 +162,18 @@ program
             "background_color": "#ffffff"
           }`;
 
-          writeFileSync(
-            join(projectPath, "public", "manifest.json"),
-            manifestJsonContent
-          );
+        fs.writeFileSync(
+          path.join(projectPath, "public", "manifest.json"),
+          manifestJsonContent
+        );
 
-          const robotsTxtContent = `User-agent: *
+        const robotsTxtContent = `User-agent: *
           Disallow: /`;
 
-          writeFileSync(
-            join(projectPath, "public", "robots.txt"),
-            robotsTxtContent
-          );
-        }
+        fs.writeFileSync(
+          path.join(projectPath, "public", "robots.txt"),
+          robotsTxtContent
+        );
 
         // 사용자가 입력한 값에 따라 config 파일 생성
         if (reactEnvironment === "React + TypeScript") {
@@ -199,7 +198,7 @@ program
             },
             include: ["src"],
           };
-          writeFileSync("tsconfig.json", JSON.stringify(tsconfig, null, 2));
+          fs.writeFileSync("tsconfig.json", JSON.stringify(tsconfig, null, 2));
         }
 
         if (usePrettierEslint) {
@@ -261,7 +260,7 @@ program
             },
           };
 
-          writeFileSync(".eslintrc.json", JSON.stringify(eslintrc, null, 2));
+          fs.writeFileSync(".eslintrc.json", JSON.stringify(eslintrc, null, 2));
 
           const prettierrc = {
             arrowParens: "avoid",
@@ -288,18 +287,18 @@ program
               },
             ],
           };
-          writeFileSync(".prettierrc", JSON.stringify(prettierrc, null, 2));
+          fs.writeFileSync(".prettierrc", JSON.stringify(prettierrc, null, 2));
         }
 
-        mkdirSync("src");
-        mkdirSync("src/components");
-        mkdirSync("src/pages");
-        mkdirSync("src/hooks");
-        mkdirSync("src/utils");
-        mkdirSync("src/types");
-        mkdirSync("src/constants");
-        mkdirSync("src/context");
-        mkdirSync("src/styles");
+        fs.mkdirSync("src");
+        fs.mkdirSync("src/components");
+        fs.mkdirSync("src/pages");
+        fs.mkdirSync("src/hooks");
+        fs.mkdirSync("src/utils");
+        fs.mkdirSync("src/types");
+        fs.mkdirSync("src/constants");
+        fs.mkdirSync("src/context");
+        fs.mkdirSync("src/styles");
 
         if (
           reactEnvironment === "React + JavaScript" ||
@@ -328,16 +327,16 @@ export default App;
 `;
 
           if (reactEnvironment === "React + JavaScript") {
-            writeFileSync("src/index.jsx", indexContent);
-            writeFileSync("src/App.jsx", appContent);
+            fs.writeFileSync("src/index.jsx", indexContent);
+            fs.writeFileSync("src/App.jsx", appContent);
           } else {
-            writeFileSync("src/index.tsx", indexContent);
-            writeFileSync("src/App.tsx", appContent);
+            fs.writeFileSync("src/index.tsx", indexContent);
+            fs.writeFileSync("src/App.tsx", appContent);
           }
         }
 
         const packageJsonPath = "package.json";
-        const packageJsonContent = readFileSync(packageJsonPath, "utf8");
+        const packageJsonContent = fs.readFileSync(packageJsonPath, "utf8");
         const packageJson = JSON.parse(packageJsonContent);
 
         packageJson.name = projectName;
@@ -359,7 +358,7 @@ export default App;
           ],
         };
 
-        writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
         const gitIgnoreContent = `# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -386,7 +385,7 @@ yarn-debug.log*
 yarn-error.log*
         `;
 
-        writeFileSync(".gitignore", gitIgnoreContent);
+        fs.writeFileSync(".gitignore", gitIgnoreContent);
 
         console.log(chalk.green("Your App is ready!"));
       });
