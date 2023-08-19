@@ -1,6 +1,6 @@
 {
   "name": "create-custom-app",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Create custom app based on command line tool with Node.js",
   "bin": {
     "create-custom-app": "./bin/create-custom-app.js"
