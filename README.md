@@ -1,6 +1,6 @@
-# create-custom-app
+# create-customized-app
 
-`create-custom-app` is a command-line tool for generating custom React applications with various configurations.
+`create-customized-app` is a command-line tool for generating custom React applications with various configurations.
 
 ## Features
 

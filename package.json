@@ -1,9 +1,9 @@
 {
-  "name": "create-custom-app",
+  "name": "create-customized-app",
   "version": "2.0.0",
-  "description": "Create custom app based on command line tool with Node.js",
+  "description": "Create react custom app based on command line tool with Node.js",
   "bin": {
-    "create-custom-app": "./bin/create-custom-app.js"
+    "create-customized-app": "./bin/create-customized-app.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -21,9 +21,9 @@
     "custom",
     "custom-app"
   ],
-  "homepage": "https://github.com/sjuhan123/create-custom-app",
+  "homepage": "https://github.com/sjuhan123/create-customized-app",
   "bugs": {
-    "url": "https://github.com/sjuhan123/create-custom-app",
+    "url": "https://github.com/sjuhan123/create-customized-app",
     "email": "sjuhan123@gmail.com"
   },
   "license": "MIT",
@@ -34,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sjuhan123/create-custom-app.git"
+    "url": "https://github.com/sjuhan123/create-customized-app.git"
   },
   "dependencies": {
     "chalk": "^4.1.1",
