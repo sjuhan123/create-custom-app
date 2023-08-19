@@ -9,13 +9,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
+    "font-end",
+    "react",
     "cli",
     "command",
     "line",
     "tool",
     "cra",
     "create",
-    "react",
     "app",
     "custom",
     "custom-app"
