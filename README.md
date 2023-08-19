@@ -10,3 +10,19 @@
 - Prettier and ESLint integration for code formatting and linting (optional)
 - React Router Dom setup (optional)
 - TypeScript support (optional)
+
+## Install
+
+```
+npx create-customized-app
+
+or
+
+npx create-customized-app .
+
+or
+
+npx create-customized-app <project-name>
+```
+
+![create-customized-app test](https://user-images.githubusercontent.com/81420856/261802530-94322b89-bd88-42c3-98b9-8545e2cac8dd.gif)
