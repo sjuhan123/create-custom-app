@@ -15,6 +15,7 @@ program
   .description(packageJson.name)
   .version(packageJson.version)
   .arguments("[folderName]")
+  .usage(`${chalk.green("[folderName]")} [options]`)
   .action((folderName = ".") => {
     // 사용자가 입력한 폴더 이름 반영
     const projectName = folderName;
