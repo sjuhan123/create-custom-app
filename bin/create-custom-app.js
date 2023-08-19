@@ -53,7 +53,7 @@ program
           type: "list",
           name: "styleLibrary",
           message: "Select a style library:",
-          choices: ["styled-components", "emotion", "none"],
+          choices: ["styled-components", "none"],
         },
         {
           type: "list",
