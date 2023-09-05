@@ -1,7 +1,4 @@
-const fs = require("fs");
 const path = require("path");
-
-const shell = require("shelljs");
 const chalk = require("chalk");
 
 const publicIndexHtmlTemplate = require("./templates/public/publicIndexHtml");
@@ -17,7 +14,7 @@ const appJsTemplate = require("./templates/src/appJs");
 
 const gitIgnore = require("./extra/gitignore");
 
-const createApp = (projectPath, projectName, answers) => {
+const createApp = (projectPath, answers) => {
   const {
     reactEnvironment,
     useReactRouterDom,
@@ -25,6 +22,7 @@ const createApp = (projectPath, projectName, answers) => {
     usePrettierEslint,
   } = answers;
 
+  // 필요한 패키지 확인
   const installPackages = ["react", "react-dom", "react-scripts"];
   const devPackages = ["@babel/plugin-proposal-private-property-in-object"];
 
@@ -68,89 +66,86 @@ const createApp = (projectPath, projectName, answers) => {
     }
   }
 
-  shell.exec(`npm init -y`);
-  console.log(chalk.green("Downloading files and packages..."));
-  shell.exec(`npm install ${installPackages.join(" ")}`);
-  shell.exec(`npm install ${devPackages.join(" ")} --save-dev`);
+  const commands = [
+    `npm init -y`,
+    `npm install ${installPackages.join(" ")}`,
+    `npm install ${devPackages.join(" ")} --save-dev`,
+  ];
 
-  fs.mkdirSync(path.join(projectPath, "public"));
+  const directories = [
+    path.join(projectPath, "public"),
+    path.join(projectPath, "src"),
+    path.join(projectPath, "src/components"),
+    path.join(projectPath, "src/pages"),
+    path.join(projectPath, "src/hooks"),
+    path.join(projectPath, "src/utils"),
+    path.join(projectPath, "src/types"),
+    path.join(projectPath, "src/constants"),
+    path.join(projectPath, "src/context"),
+    path.join(projectPath, "src/styles"),
+  ];
 
-  fs.writeFileSync(
-    path.join(projectPath, "public", "index.html"),
-    publicIndexHtmlTemplate
-  );
-
-  fs.writeFileSync(
-    path.join(projectPath, "public", "manifest.json"),
-    manifestJsonTemplate
-  );
-
-  fs.writeFileSync(
-    path.join(projectPath, "public", "robots.txt"),
-    robotsTxTTemplate
-  );
+  const files = [
+    {
+      filePath: path.join(projectPath, "public", "index.html"),
+      content: publicIndexHtmlTemplate,
+    },
+    {
+      filePath: path.join(projectPath, "public", "manifest.json"),
+      content: manifestJsonTemplate,
+    },
+    {
+      filePath: path.join(projectPath, "public", "robots.txt"),
+      content: robotsTxTTemplate,
+    },
+    { filePath: ".gitignore", content: gitIgnore },
+  ];
 
   // 사용자가 입력한 값에 따라 config 파일 생성
   if (reactEnvironment === "React + TypeScript") {
-    fs.writeFileSync("tsconfig.json", JSON.stringify(tsconfig, null, 2));
+    files.push({
+      filePath: path.join(projectPath, "tsconfig.json"),
+      content: JSON.stringify(tsconfig, null, 2),
+    });
   }
 
   if (usePrettierEslint) {
-    fs.writeFileSync(".eslintrc.json", JSON.stringify(eslintrc, null, 2));
-    fs.writeFileSync(".prettierrc", JSON.stringify(prettierrc, null, 2));
+    files.push({
+      filePath: path.join(projectPath, ".eslintrc.json"),
+      content: JSON.stringify(eslintrc, null, 2),
+    });
+    files.push({
+      filePath: path.join(projectPath, ".prettierrc"),
+      content: JSON.stringify(prettierrc, null, 2),
+    });
   }
-
-  fs.writeFileSync(".gitignore", gitIgnore);
-
-  fs.mkdirSync("src");
-  fs.mkdirSync("src/components");
-  fs.mkdirSync("src/pages");
-  fs.mkdirSync("src/hooks");
-  fs.mkdirSync("src/utils");
-  fs.mkdirSync("src/types");
-  fs.mkdirSync("src/constants");
-  fs.mkdirSync("src/context");
-  fs.mkdirSync("src/styles");
 
   if (
     reactEnvironment === "React + JavaScript" ||
     reactEnvironment === "React + TypeScript"
   ) {
-    if (reactEnvironment === "React + JavaScript") {
-      fs.writeFileSync("src/index.jsx", indexHtmlTemplate);
-      fs.writeFileSync("src/App.jsx", appJsTemplate);
-    } else {
-      fs.writeFileSync("src/index.tsx", indexHtmlTemplate);
-      fs.writeFileSync("src/App.tsx", appJsTemplate);
-    }
+    const indexFilePath =
+      reactEnvironment === "React + JavaScript"
+        ? "src/index.jsx"
+        : "src/index.tsx";
+    const appFilePath =
+      reactEnvironment === "React + JavaScript" ? "src/App.jsx" : "src/App.tsx";
+
+    files.push({
+      filePath: path.join(projectPath, indexFilePath),
+      content: indexHtmlTemplate,
+    });
+    files.push({
+      filePath: path.join(projectPath, appFilePath),
+      content: appJsTemplate,
+    });
   }
 
-  const packageJsonPath = "package.json";
-  const packageJsonContent = fs.readFileSync(packageJsonPath, "utf8");
-  const packageJson = JSON.parse(packageJsonContent);
-
-  packageJson.name = projectName;
-  packageJson.scripts = {
-    start: "react-scripts start",
-    build: "react-scripts build",
-    test: "react-scripts test",
-    eject: "react-scripts eject",
+  return {
+    commands,
+    directories,
+    files,
   };
-  packageJson.eslintConfig = {
-    extends: ["react-app"],
-  };
-  packageJson.browserslist = {
-    production: [">0.2%", "not dead", "not op_mini all"],
-    development: [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
-    ],
-  };
-
-  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-
-  console.log(chalk.green("Your App is ready!"));
 };
 
 module.exports = createApp;

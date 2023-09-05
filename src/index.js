@@ -6,8 +6,10 @@ const inquirer = require("inquirer");
 const questions = require("./questions");
 
 const createApp = require("./createApp");
+const { runCommands, createDirectories, createFiles } = require("./utils");
+const changePackageJsonDetail = require("./lib/changePackageJson");
 
-function init(folderName) {
+const init = async (folderName) => {
   const projectName = folderName;
   const projectPath = path.join(process.cwd(), projectName);
 
@@ -24,9 +26,21 @@ function init(folderName) {
 
   process.chdir(projectPath);
 
-  inquirer.prompt(questions).then((answers) => {
-    createApp(projectPath, projectName, answers);
-  });
-}
+  const answers = await inquirer.prompt(questions);
+
+  const { commands, directories, files } = createApp(projectPath, answers);
+
+  console.log(chalk.green("Downloading files and packages..."));
+
+  await Promise.all([
+    runCommands(commands),
+    createDirectories(directories),
+    createFiles(files),
+  ]);
+
+  changePackageJsonDetail(projectName);
+
+  console.log(chalk.green("Your App is ready!"));
+};
 
 module.exports = init;
