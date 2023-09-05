@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const changePackageJsonDetail = (projectName) => {
+const modifyPackageJson = (projectName) => {
   const packageJsonPath = "package.json";
   const packageJsonContent = fs.readFileSync(packageJsonPath, "utf8");
   const packageJson = JSON.parse(packageJsonContent);
@@ -27,4 +27,4 @@ const changePackageJsonDetail = (projectName) => {
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 };
 
-module.exports = changePackageJsonDetail;
+module.exports = modifyPackageJson;

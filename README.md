@@ -25,4 +25,22 @@ or
 npx create-customized-app <project-name>
 ```
 
-![create-customized-app test](https://user-images.githubusercontent.com/81420856/261802530-94322b89-bd88-42c3-98b9-8545e2cac8dd.gif)
+## Demo
+
+### start package
+
+![create-customized-app demo](https://velog.velcdn.com/images/sjuhan123/post/cd01867b-df9b-43da-b8cd-469d034a617c/image.gif)
+
+### check installed project
+
+![create-customized-app test](https://velog.velcdn.com/images/sjuhan123/post/28cfa533-76f1-4d13-bc88-1bbe097c283f/image.gif)
+
+## Version
+
+- 1.0.0
+  - Initial release
+- 1.0.2
+  - Refactor: Separate script dependencies
+- 1.1.0
+  - Refactor: Package installation speed improvement
+  - Refactor: Separate concerns of createApp function

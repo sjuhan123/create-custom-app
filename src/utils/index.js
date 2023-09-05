@@ -9,7 +9,7 @@ const runCommands = async (commands) => {
   );
 };
 
-async function createDirectories(directories) {
+const createDirectories = async (directories) => {
   const promises = directories.map(async (directory) => {
     try {
       await fs.promises.mkdir(directory, { recursive: true });
@@ -21,7 +21,7 @@ async function createDirectories(directories) {
   });
 
   await Promise.all(promises);
-}
+};
 
 const createFiles = async (files) => {
   await Promise.all(

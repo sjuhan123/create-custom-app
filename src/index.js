@@ -1,44 +1,33 @@
-const fs = require("fs");
-const path = require("path");
-
 const chalk = require("chalk");
 const inquirer = require("inquirer");
-const questions = require("./questions");
 
-const createApp = require("./createApp");
 const { runCommands, createDirectories, createFiles } = require("./utils");
-const changePackageJsonDetail = require("./lib/changePackageJson");
+const {
+  setAndGetRootDir,
+  getDirs,
+  getFiles,
+  modifyPackageJson,
+  getCommands,
+  getQuestions,
+} = require("./lib");
 
 const init = async (folderName) => {
-  const projectName = folderName;
-  const projectPath = path.join(process.cwd(), projectName);
+  const { projectName, projectPath } = setAndGetRootDir(folderName);
 
-  if (!fs.existsSync(projectPath)) {
-    fs.mkdirSync(projectPath);
-  } else {
-    console.log(
-      `The folder ${chalk.red(
-        folderName
-      )} already exist in the current directory, please give it another name.`
-    );
-    process.exit(1);
-  }
+  const answers = await inquirer.prompt(getQuestions());
 
-  process.chdir(projectPath);
+  const commands = getCommands(answers);
+  const dirs = getDirs(projectPath);
+  const files = getFiles(projectPath, answers);
 
-  const answers = await inquirer.prompt(questions);
-
-  const { commands, directories, files } = createApp(projectPath, answers);
-
-  console.log(chalk.green("Downloading files and packages..."));
+  console.log(chalk.green("\nDownloading files and packages...\n"));
 
   await Promise.all([
     runCommands(commands),
-    createDirectories(directories),
+    createDirectories(dirs),
     createFiles(files),
+    modifyPackageJson(projectName),
   ]);
-
-  changePackageJsonDetail(projectName);
 
   console.log(chalk.green("Your App is ready!"));
 };
